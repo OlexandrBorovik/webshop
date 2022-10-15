@@ -1,13 +1,16 @@
 package com.example.webshop.services;
 
+import com.example.webshop.models.Product;
 import com.example.webshop.models.User;
 import com.example.webshop.models.enams.Role;
 import com.example.webshop.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +23,9 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+private final ProductService productService;
     //registration new user
-    public boolean createUser(User user) {
+    public boolean createUser(User user, String role) {
         String email = user.getEmail();
 
         if (userRepository.findByEmail(email) != null) {
@@ -30,13 +33,26 @@ public class UserService {
         } else {
             user.setActiv(true);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.getRoles().add(Role.ROLE_USER);
+            if(role.equals("s")){
+                user.getRoles().add(Role.ROLE_USER);
+                log.info("Saving new User");
+            }else{
+                user.getRoles().add(Role.ROLE_BUYER);
+                log.info("Saving new Buyer");
+            }
+
             log.info("Saving new User with email: {}", email);
             userRepository.save(user);
             return true;
         }
     }
 
+    public User getUserByPrincipal(Principal principal) {
+        if(principal== null) {
+            return new User();
+        }
+        return userRepository.findByEmail(principal.getName());
+    }
     public List<User> users (){
         return userRepository.findAll();
     }
@@ -65,4 +81,14 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void addToBag(Principal principal, Long id) {
+        User user = userRepository.findByEmail(principal.getName());
+        Product product = new Product();
+        product = productService.getProductById(id);
+        log.info("Add product");
+        user.getProducts().add(product);
+        userRepository.save(user);
+        log.info("save product");
+
+    }
 }

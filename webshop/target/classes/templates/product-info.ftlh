@@ -13,6 +13,12 @@
 <b>Description:</b>${product.description}<br>
 <b>Price:</b>${product.price}<br>
 <b>Seller:</b> <a href="/user/${product.user.id}">${product.user.name}</a>><br>
+
+<#if role=="Optional[ROLE_USER]" >
+    <form>
+        <input type="submit" value="Add" onclick="/product/${product.id}/add">
+    </form>
+</#if>
 <hr>
 </body>
 </html>

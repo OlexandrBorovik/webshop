@@ -1,45 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>    Diplom    </title>
+    <title>WEBSHOP</title>
 </head>
 <body>
+<h1>WEBSHOP</h1>
+<hr>
 <#if user.email??>
-   <form action="/logout" method="post">
-    <input type="hidden" name="_csrf" value="${_csrf.token}">
-    <input type="submit" value="logout">
-   </form>
-    <#if user.isAdmin()>
-        <a href="/admin"> Admin page</a>
+    <h3>Your name: <i>${user.name}</i></h3>
+
+
+    <#if role=="Optional[ROLE_USER]" >
+        <form>
+            <input type="button" onclick="window.location.href = '/user/bag';" value="BAG"/>
+        </form>
     </#if>
-    <#else >
-        Hello | <a href="/login">LogIn</a></h1><hr>
+
+    <form action="/logout" method="post">
+        <input type="hidden" name="_csrf" value="${_csrf.token}">
+        <input type="submit" value="LogOut"/>
+    </form>
+    <#if user.isAdmin()>
+        <a href="/admin">Administration</a>
+    </#if>
+
+<#else>
+    <a href="/login">LogIn</a></h1>
 </#if>
+<hr>
+<h4>Our poducts</h4>
 <form action="/" method="get">
-    Search product: <input type="text" name="title"><br>
-    <input type="submit" value="Search">
+    Find by title: <input type="text" name="title">
+    <input type="submit" value="Search"/>
 </form>
 <#list products as product>
     <div>
-        <p><b>${product.title}</b>${product.price} UAH | <a href="/product/${product.id}">More information...</a> </p>
+        <p><b>${product.title}</b> ${product.price} UAH | <a href="/product/${product.id}">More ...</a></p>
     </div>
-    <#else >
-    <h3>Empty</h3>
+<#else>
+    <h3>Empty shop</h3>
 </#list>
+<#if role=="Optional[ROLE_BUYER]" >
 <#if user.email??>
-<hr>
-<h2> Add product</h2>
-<form action="/product/create" metod="post" enctype="multipart/form-data">
-    Title of product: <input type="text", name="title"/><br><br>
-    Description of product: <input type="text", name="description"/><br><br>
-    Price of product: <input type="number", name="price"/><br><br>
-    Seller of product: <input type="text", name="seller"/><br><br>
-    Photo first: <input type="file", name="fileOne"/><br><br>
-    Photo second : <input type="file", name="fileTwo"/><br><br>
-    Photo third : <input type="file", name="fileThree"/><br><br>
-    <input type="hidden" name="_csrf" value="${_csrf.token}">
-    <input type="submit" value="ADD">
-</form>
+    <hr>
+    <h3>Add product</h3>
+    <form action="/product/create" method="post" enctype="multipart/form-data">
+        Title: <input type="text" name="title"/><br><br>
+        Description: <input type="text" name="description"/><br><br>
+        Price: <input type="number" name="price"/><br><br>
+        Photo: <input type="file" name="fileOne"/><br><br>
+        Photo: <input type="file" name="fileTwo"/><br><br>
+        Photo: <input type="file" name="fileThree"/><br><br>
+        <input type="hidden" name="_csrf" value="${_csrf.token}">
+        <input type="submit" value="Add"/>
+    </form>
+</#if>
 </#if>
 </body>
 </html>

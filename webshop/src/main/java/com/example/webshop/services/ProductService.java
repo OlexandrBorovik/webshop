@@ -45,6 +45,7 @@ public class ProductService {
             three = toPicture(fileThree);
             product.addPicture(three);
         }
+
         log.info("Save new product.Title {};", product.getTitle());
         Product productDB = productRepository.save(product);
         productDB.setPreviewPictureId(productDB.getPictures().get(0).getId());
