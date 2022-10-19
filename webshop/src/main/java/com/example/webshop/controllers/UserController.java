@@ -3,9 +3,11 @@ package com.example.webshop.controllers;
 import com.example.webshop.models.Product;
 import com.example.webshop.models.User;
 import com.example.webshop.models.enams.Role;
+import com.example.webshop.services.ProductService;
 import com.example.webshop.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +25,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
+    private final ProductService productService;
 
     @GetMapping("/login")
     public String login() {
@@ -53,16 +55,9 @@ model.addAttribute("products", user.getProducts());
         return "user-profile";
     }
 
-    @GetMapping("/bag")
-    public String productInfo( Model model, Principal principal) {
-        User user = userService.getUserByPrincipal(principal);
-        model.addAttribute("products",user.getProducts());
-        model.addAttribute("user", user);
 
-        return "bag";
-    }
 
-    @PostMapping("/product/{id}/add")
+    @GetMapping("/product/{id}/add")
     public String addProductToBag(@PathVariable Long id, Principal principal)  {
         userService.addToBag(principal, id);
         return "redirect:/product/{id}";

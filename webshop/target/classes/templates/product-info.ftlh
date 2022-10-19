@@ -14,9 +14,11 @@
 <b>Price:</b>${product.price}<br>
 <b>Seller:</b> <a href="/user/${product.user.id}">${product.user.name}</a>><br>
 
-<#if role=="Optional[ROLE_USER]" >
-    <form>
-        <input type="submit" value="Add" onclick="/product/${product.id}/add">
+<#if role=="Optional[ROLE_BUYER]" >
+
+    <form action="/product/${product.id}/add" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf" value="${_csrf.token}">
+        <input type="submit" value="Add"/>
     </form>
 </#if>
 <hr>

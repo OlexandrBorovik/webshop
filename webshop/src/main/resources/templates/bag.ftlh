@@ -9,7 +9,7 @@
 
 <#list products as product>
     <div>
-        <p><b>${product.title}</b> ${product.price} UAH | <a href="/product/${product.id}">More ...</a></p>
+        <p><b>${product.title}</b> ${product.price} UAH | </p>
     </div>
 <#else>
     <h3>Empty shop</h3>

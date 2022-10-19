@@ -12,8 +12,8 @@
     Phone number: <input type="text" name="phone"><br><br>
    Password: <input type="password" name="password"><br><br>
     <select name="select"> <!--Supplement an id here instead of using 'name'-->
-        <option value="s">Seller</option>
-        <option value="b" selected>Buyer</option>
+        <option value="seller">Seller</option>
+        <option value="buyer" selected>Buyer</option>
     </select>
     <input type="hidden" name="_csrf" value="${_csrf.token}">
     <input type="submit" value="Registration"/>

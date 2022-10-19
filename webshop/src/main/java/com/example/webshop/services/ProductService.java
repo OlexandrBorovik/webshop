@@ -3,6 +3,7 @@ package com.example.webshop.services;
 import com.example.webshop.models.Picture;
 import com.example.webshop.models.Product;
 import com.example.webshop.models.User;
+import com.example.webshop.models.enams.Role;
 import com.example.webshop.repositories.ProductRepository;
 import com.example.webshop.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,12 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.channels.MulticastChannel;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
+import org.springframework.mock.web.MockMultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -24,26 +27,40 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
 
-    private List<Product> productList = new ArrayList<>();
-
     public void saveProduct(Principal principal, Product product, MultipartFile fileOne,
                             MultipartFile fileTwo, MultipartFile fileThree) throws IOException {
         product.setUser(getUserByPrincipal(principal));
         Picture one;
         Picture two;
         Picture three;
-        if (fileOne.getSize() != 0) {
+        MultipartFile multipartFile = new MockMultipartFile("84529.png", new FileInputStream(new File("C:\\Users\\boovi\\Desktop\\webshop\\src\\main\\resources\\images\\84529.png")));
+
+
+        if (fileOne!=null) {
             one = toPicture(fileOne);
             one.setPreviewPicture(true);
             product.addPicture(one);
+        }else{
+            one = toPicture(multipartFile);
+            one.setPreviewPicture(true);
+            product.addPicture(one);
         }
-        if (fileTwo.getSize() != 0) {
+        if (fileTwo!=null) {
             two = toPicture(fileTwo);
             product.addPicture(two);
+        }else{
+            two = toPicture(multipartFile);
+            two.setPreviewPicture(true);
+            product.addPicture(two);
         }
-        if (fileThree.getSize() != 0) {
+        if (fileThree!=null) {
             three = toPicture(fileThree);
             product.addPicture(three);
+        }else{
+            three = toPicture(multipartFile);
+            three.setPreviewPicture(true);
+            product.addPicture(three);
+            log.info("Save new product.Title {};", product.getTitle());
         }
 
         log.info("Save new product.Title {};", product.getTitle());
@@ -69,13 +86,23 @@ public class ProductService {
 
     }
 
-    public List<Product> allProducts(String title) {
+    public List<Product> allProducts(String title, User user  ) {
+List<Product>list = new ArrayList<>();
+
+        List<Product>listAll = productRepository.findAll();
         if (title != null) {
             return productRepository.findByTitle(title);
         } else {
-            return productRepository.findAll();
-        }
+                for (Product product : listAll)
+                    if (product.getUser().getRoles().stream().findFirst() .equals(user.getRoles().stream().findFirst())==false)  {
+                        list.add(product);
+                    }
+                return list;
+            }
+
     }
+
+
 
     public void deleteProduct(Long id) {
 
@@ -90,5 +117,13 @@ public class ProductService {
         }
         return null;
 
+    }
+
+    public List<Product> allProductsBag(User user) {
+        return user.getProducts();
+    }
+
+    public List<Product> allProductsUser() {
+        return productRepository.findAll();
     }
 }

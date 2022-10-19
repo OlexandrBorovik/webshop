@@ -3,6 +3,7 @@ package com.example.webshop.services;
 import com.example.webshop.models.Product;
 import com.example.webshop.models.User;
 import com.example.webshop.models.enams.Role;
+import com.example.webshop.repositories.ProductRepository;
 import com.example.webshop.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class UserService {
+    private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 private final ProductService productService;
@@ -33,7 +35,7 @@ private final ProductService productService;
         } else {
             user.setActiv(true);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            if(role.equals("s")){
+            if(role.equals("seller")){
                 user.getRoles().add(Role.ROLE_USER);
                 log.info("Saving new User");
             }else{
@@ -82,13 +84,16 @@ private final ProductService productService;
     }
 
     public void addToBag(Principal principal, Long id) {
-        User user = userRepository.findByEmail(principal.getName());
-        Product product = new Product();
-        product = productService.getProductById(id);
+        Product product = productService.getProductById(id);
+        Product productBag = new Product();
+        productBag.setUser(getUserByPrincipal(principal));
+        productBag.setTitle(product.getTitle());
+        productBag.setDescription(product.getDescription());
+        productBag.setPrice(product.getPrice());
+        productRepository.save(productBag);
+
         log.info("Add product");
-        user.getProducts().add(product);
-        userRepository.save(user);
-        log.info("save product");
+
 
     }
 }

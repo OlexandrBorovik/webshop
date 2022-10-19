@@ -34,10 +34,9 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"))
 
     private Set<com.example.webshop.models.enams.Role> roles = new HashSet<>();
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     private List<Product> products = new ArrayList<>();
-
-
     public boolean isAdmin(){
         return roles.contains(com.example.webshop.models.enams.Role.ROLE_ADMIN);
     }
