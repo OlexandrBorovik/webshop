@@ -14,11 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.channels.MulticastChannel;
+
 import java.security.Principal;
 import java.util.*;
 
-import org.springframework.mock.web.MockMultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -33,34 +32,22 @@ public class ProductService {
         Picture one;
         Picture two;
         Picture three;
-        MultipartFile multipartFile = new MockMultipartFile("84529.png", new FileInputStream(new File("C:\\Users\\boovi\\Desktop\\webshop\\src\\main\\resources\\images\\84529.png")));
+
 
 
         if (fileOne!=null) {
             one = toPicture(fileOne);
             one.setPreviewPicture(true);
             product.addPicture(one);
-        }else{
-            one = toPicture(multipartFile);
-            one.setPreviewPicture(true);
-            product.addPicture(one);
+
         }
         if (fileTwo!=null) {
             two = toPicture(fileTwo);
-            product.addPicture(two);
-        }else{
-            two = toPicture(multipartFile);
-            two.setPreviewPicture(true);
             product.addPicture(two);
         }
         if (fileThree!=null) {
             three = toPicture(fileThree);
             product.addPicture(three);
-        }else{
-            three = toPicture(multipartFile);
-            three.setPreviewPicture(true);
-            product.addPicture(three);
-            log.info("Save new product.Title {};", product.getTitle());
         }
 
         log.info("Save new product.Title {};", product.getTitle());
@@ -79,6 +66,7 @@ public class ProductService {
     private Picture toPicture(MultipartFile file) throws IOException {
         Picture picture = new Picture();
         picture.setName(file.getName());
+        picture.setOriginalFileName(file.getOriginalFilename());
         picture.setContentType(file.getContentType());
         picture.setSize(file.getSize());
         picture.setBytes(file.getBytes());

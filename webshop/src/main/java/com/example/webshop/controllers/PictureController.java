@@ -4,6 +4,7 @@ import com.example.webshop.models.Picture;
 import com.example.webshop.repositories.PictureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +21,15 @@ public class PictureController {
 
     @GetMapping("/pictures/{id}")
     private ResponseEntity<?> getPictureById(@PathVariable Long id) {
-        Picture picture = pictureRepository.findById(id).orElse(null);
-        return ResponseEntity.ok()
-                .header("fileName", picture.getName())
-                .contentType(MediaType.valueOf(picture.getContentType()))
-                .contentLength(picture.getSize())
-                .body(new InputStreamResource(new ByteArrayInputStream(picture.getBytes())));
+        try {
+            Picture picture = pictureRepository.findById(id).orElse(null);
+            return ResponseEntity.ok()
+                    .header("fileName", picture.getOriginalFileName())
+                    .contentType(MediaType.valueOf(picture.getContentType()))
+                    .contentLength(picture.getSize())
+                    .body(new InputStreamResource(new ByteArrayInputStream(picture.getBytes())));
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

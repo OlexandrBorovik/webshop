@@ -22,6 +22,8 @@ public class Picture {
     private Long size;
     @Column(name = "contentType")
     private String contentType;
+    @Column(name = "originalFileName")
+    private String originalFileName;
     @Column(name = "isPreviewPicture")
     private boolean isPreviewPicture;
     @Lob
