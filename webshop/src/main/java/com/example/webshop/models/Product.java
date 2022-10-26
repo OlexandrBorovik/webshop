@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class Product {
     private List<Picture> pictures = new ArrayList<>();
     private Long previewImageId;
     private Long previewPictureId;
-    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn
     private User user;
 

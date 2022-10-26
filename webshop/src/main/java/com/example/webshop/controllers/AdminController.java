@@ -18,21 +18,22 @@ public class AdminController {
     private final UserService userService;
 
     @GetMapping("/admin")
-    public String admin (Model model) {
-        model.addAttribute("users" , userService.users());
-                return "admin";
+    public String admin(Model model) {
+        model.addAttribute("users", userService.users());
+        return "admin";
     }
-@PostMapping("/admin/user/ban/{id}")
-public String ban (@PathVariable("id") Long id){
+
+    @PostMapping("/admin/user/ban/{id}")
+    public String ban(@PathVariable("id") Long id) {
         userService.ban(id);
         return "redirect:/admin";
-}
+    }
 
-@GetMapping("/admin/user/edit/{user}")
-public String userEdit(@PathVariable("user") User user, Model model){
+    @GetMapping("/admin/user/edit/{user}")
+    public String userEdit(@PathVariable("user") User user, Model model) {
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
         return "user-edit";
-}
+    }
 
 }

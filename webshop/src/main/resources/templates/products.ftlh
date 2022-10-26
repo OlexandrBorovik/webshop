@@ -28,32 +28,34 @@
     <a href="/login">LogIn</a></h1>
 </#if>
 <hr>
-<h4>Our poducts</h4>
 <form action="/" method="get">
     Find by title: <input type="text" name="title">
     <input type="submit" value="Search"/>
 </form>
-<#if role=="Optional[ROLE_BUYER]" >
+<h4 style="text-align:center" >Our poducts</h4></p>
+
+
+<#if role=="Optional[ROLE_BUYER]"  >
 <#list products as product>
     <div>
-        <p><b>${product.title}</b> ${product.price} UAH | <a href="/product/${product.id}">More ...</a></p>
+        <p><b>${product.title}</b> ${product.price} UAH <a href="/product/${product.id}">More ...</a></p>
     </div>
 <#else>
     <h3>Empty shop</h3>
 </#list>
 </#if>
-<#if role=="Optional[ROLE_USER]" >
+<#if role=="Optional[ROLE_USER]" || user.isAdmin()>
     <#list productsUser as product>
         <div>
-            <p><b>${product.title}</b> ${product.price} UAH | <a href="/product/${product.id}">More ...</a></p>
+            <p>  <p style="text-align:center"> <b>${product.title} </b> ${product.price} UAH  <a href="/product/${product.id}">More ...</a></p></p>
         </div>
     <#else>
         <h3>Empty shop</h3>
     </#list>
 <#if user.email??>
     <hr>
-    <h3>Add product</h3>
-    <form action="/product/create" method="post" enctype="multipart/form-data">
+    <h3 style="text-align:center">Add product</h3>
+    <form style="text-align:center" action="/product/create" method="post" enctype="multipart/form-data">
         Title: <input type="text" name="title"/><br><br>
         Description: <input type="text" name="description"/><br><br>
         Price: <input type="number" name="price"/><br><br>

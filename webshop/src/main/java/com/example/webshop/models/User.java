@@ -22,7 +22,7 @@ public class User implements UserDetails {
     private int phone;
     @Column(name = "name")
     private String name;
-    @Column(name = "active")
+    @Column(name = "activ")
     private boolean activ;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "picture_id")
@@ -37,7 +37,8 @@ public class User implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     private List<Product> products = new ArrayList<>();
-    public boolean isAdmin(){
+
+    public boolean isAdmin() {
         return roles.contains(com.example.webshop.models.enams.Role.ROLE_ADMIN);
     }
 
@@ -69,5 +70,8 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return activ;
+    }
+
+    public void setActive(boolean b) {
     }
 }

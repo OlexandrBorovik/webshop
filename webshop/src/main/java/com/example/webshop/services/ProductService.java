@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-
 import java.security.Principal;
 import java.util.*;
 
@@ -25,7 +22,8 @@ import java.util.*;
 public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
-
+    //------------------------------------------------------------------------------------------
+    //Add new products
     public void saveProduct(Principal principal, Product product, MultipartFile fileOne,
                             MultipartFile fileTwo, MultipartFile fileThree) throws IOException {
         product.setUser(getUserByPrincipal(principal));
@@ -33,19 +31,16 @@ public class ProductService {
         Picture two;
         Picture three;
 
-
-
-        if (fileOne!=null) {
+        if (fileOne != null) {
             one = toPicture(fileOne);
             one.setPreviewPicture(true);
             product.addPicture(one);
-
         }
-        if (fileTwo!=null) {
+        if (fileTwo != null) {
             two = toPicture(fileTwo);
             product.addPicture(two);
         }
-        if (fileThree!=null) {
+        if (fileThree != null) {
             three = toPicture(fileThree);
             product.addPicture(three);
         }
@@ -55,14 +50,16 @@ public class ProductService {
         productDB.setPreviewPictureId(productDB.getPictures().get(0).getId());
         productRepository.save(product);
     }
-
+    //------------------------------------------------------------------------------------------
+    //Find user which doing request
     public User getUserByPrincipal(Principal principal) {
-        if(principal== null) {
+        if (principal == null) {
             return new User();
         }
         return userRepository.findByEmail(principal.getName());
     }
-
+    //------------------------------------------------------------------------------------------
+    // Convert file to entity picture
     private Picture toPicture(MultipartFile file) throws IOException {
         Picture picture = new Picture();
         picture.setName(file.getName());
@@ -73,31 +70,30 @@ public class ProductService {
         return picture;
 
     }
+    //------------------------------------------------------------------------------------------
+    // All products
+    public List<Product> allProducts(String title, User user) {
+        List<Product> list = new ArrayList<>();
 
-    public List<Product> allProducts(String title, User user  ) {
-List<Product>list = new ArrayList<>();
-
-        List<Product>listAll = productRepository.findAll();
+        List<Product> listAll = productRepository.findAll();
         if (title != null) {
             return productRepository.findByTitle(title);
         } else {
-                for (Product product : listAll)
-                    if (product.getUser().getRoles().stream().findFirst() .equals(user.getRoles().stream().findFirst())==false)  {
-                        list.add(product);
-                    }
-                return list;
-            }
-
+            for (Product product : listAll)
+                if (product.getUser().getRoles().stream().findFirst().equals(user.getRoles().stream().findFirst()) == false) {
+                    list.add(product);
+                }
+            return list;
+        }
     }
-
-
-
+//------------------------------------------------------------------------------------------
+    //Delete product
     public void deleteProduct(Long id) {
 
         productRepository.deleteAllById(Collections.singleton(id));
     }
-
-
+    //------------------------------------------------------------------------------------------
+    //Find product by ID
     public Product getProductById(Long id) {
         Product product = productRepository.findAllById(id);
         if (product != null) {
@@ -107,10 +103,12 @@ List<Product>list = new ArrayList<>();
 
     }
 
+    //All products in bag ( For Buyers )
     public List<Product> allProductsBag(User user) {
         return user.getProducts();
     }
 
+    //All products  ( For Sellers )
     public List<Product> allProductsUser() {
         return productRepository.findAll();
     }

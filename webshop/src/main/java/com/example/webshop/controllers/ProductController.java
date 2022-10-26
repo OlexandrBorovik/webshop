@@ -27,16 +27,15 @@ public class ProductController {
     @GetMapping("/")
     public String products(@RequestParam(name = "title", required = false) String title, Model model, Principal principal) {
         User user = productService.getUserByPrincipal(principal);
-        model.addAttribute("products", productService.allProducts(title, user ));
+        model.addAttribute("products", productService.allProducts(title, user));
         model.addAttribute("productsUser", productService.allProductsUser());
-        model.addAttribute("user",productService.getUserByPrincipal(principal));
+        model.addAttribute("user", productService.getUserByPrincipal(principal));
 
         Set<Role> role = user.getRoles();
-        model.addAttribute("role",role.stream().findFirst());
+        model.addAttribute("role", role.stream().findFirst());
         return "products";
 
     }
-
 
 
     @GetMapping("/product/{id}")
@@ -46,25 +45,25 @@ public class ProductController {
         model.addAttribute("pictures", product.getPictures());
         User user = productService.getUserByPrincipal(principal);
         Set<Role> role = user.getRoles();
-        model.addAttribute("role",role.stream().findFirst());
+        model.addAttribute("role", role.stream().findFirst());
 
         return "product-info";
     }
 
     @PostMapping("/product/create")
-    public String createProduct(@Nullable @RequestParam("fileOne") MultipartFile fileOne ,
+    public String createProduct(@Nullable @RequestParam("fileOne") MultipartFile fileOne,
                                 @Nullable @RequestParam("fileTwo") MultipartFile fileTwo,
                                 @Nullable @RequestParam("fileThree") MultipartFile fileThree,
-                               Product product , Principal principal) throws IOException {
+                                Product product, Principal principal) throws IOException {
         productService.saveProduct(principal, product, fileOne, fileTwo, fileThree);
         return "redirect:/";
 
     }
 
     @GetMapping("/bag")
-    public String productInfo( Model model, Principal principal) {
+    public String productInfo(Model model, Principal principal) {
         User user = userService.getUserByPrincipal(principal);
-        model.addAttribute("products",productService.allProductsBag(user));
+        model.addAttribute("products", productService.allProductsBag(user));
         model.addAttribute("user", user);
 
         return "bag";
@@ -76,8 +75,9 @@ public class ProductController {
         return "redirect:/";
 
     }
+
     @PostMapping("/product/{id}/add")
-    public String addProductToBag(@PathVariable Long id, Principal principal)  {
+    public String addProductToBag(@PathVariable Long id, Principal principal) {
         userService.addToBag(principal, id);
         return "redirect:/";
     }
